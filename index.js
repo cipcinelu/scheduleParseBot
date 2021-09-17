@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const path = require('path')
-const fs = require('fs')
+const {writeFile} = require('fs')
 
 const convertImage = require('./scripts/convertImage.js')
 const rename = require('./scripts/rename.js')
@@ -38,7 +38,7 @@ let chatId;
             const chatIdObject = chatIdJson;
             chatIdObject[chatId] = name;
 
-            fs.writeFile('./chatIdJson.json', 
+            writeFile('./chatIdJson.json', 
                     JSON.stringify(chatIdObject), (err) => {
                 if (err) return console.error(err)
             });
@@ -93,13 +93,7 @@ async function main() {
                 })
             })
         })
-
         await browser.close().then(() => console.log('Браузер закрыт'))
-    } else {
-        Object.keys(chatIdJson).forEach ((el) => {
-            bot.sendMediaGroup(el, files)
-        })
-        console.log('Неполный запуск')
     }
 }
 
