@@ -48,6 +48,8 @@ let chatId;
         if (text == '/schedule')
             return (bot.sendMediaGroup(chatId, files),
                 bot.sendMessage(chatId, "Loading..."))
+        if (text == '/test')
+            main()
     })
 
     bot.on('webhook_error', (error) => {
@@ -70,9 +72,11 @@ async function main() {
     let exelLinks = $('td.sites-layout-tile.sites-tile-name-content-1>div>p>b>span>span>a')
 
     prevExel = exelLink
-    exelLink = $(exelLinks[exelLinks.length - 1]).attr('href')
+
+    exelLink = $(exelLinks[exelLinks.length-1]).attr('href')
 
     if (exelLink != prevExel) {
+    //if (false) {
         await page.goto(exelLink);
         content = await page.content();
         $ = cheerio.load(content);
@@ -94,6 +98,8 @@ async function main() {
             })
         })
         await browser.close().then(() => console.log('Браузер закрыт'))
+    } else {
+        console.log('Расписание не изменилось')
     }
 }
 
