@@ -8,7 +8,7 @@ module.exports = async (pdfPath) => {
         out_dir : './img',
         out_prefix : path.basename(pdfPath, path.extname(pdfPath)),
         page : null,
-        scale: 4096
+        scale: 4096,
     }
 
     await pdfConverter.convert(pdfPath, option)

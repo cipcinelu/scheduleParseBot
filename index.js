@@ -1,3 +1,4 @@
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
@@ -8,12 +9,12 @@ const {writeFile} = require('fs')
 const convertImage = require('./scripts/convertImage.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
-const config = require('./config.json')
 const chatIdJson = require('./chatIdJson.json')
 
 puppeteer.use(StealthPlugin())
-const token = config.telegramToken;
+const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
+
 let files = [
     { type: 'document', media: './img/schedule-1.png' },
     { type: 'document', media: './img/schedule-2.png' },
@@ -49,7 +50,8 @@ let chatId;
             return (bot.sendMediaGroup(chatId, files),
                 bot.sendMessage(chatId, "Loading..."))
         if (text == '/test')
-            main()
+            return (main(),
+                bot.sendMessage(chatId, "Пошло поехало"))
     })
 
     bot.on('webhook_error', (error) => {
@@ -69,12 +71,27 @@ async function main() {
     let content = await page.content();
 
     let $ = cheerio.load(content);
-    let exelLinks = $('td.sites-layout-tile.sites-tile-name-content-1>div>p>b>span>span>a')
+    let exelLinks = $('span[style="line-height:19.9733px"]>a')
+    let dataShedule = []
 
-    prevExel = exelLink
+    for (i = 0; i < exelLinks.length; i++){
+        let exelLinkLocal = $(exelLinks[i]).text()
+        if (exelLinkLocal.search(/(заняти.)/)!= -1) {
+            dataShedule.push (parseInt(exelLinkLocal.match(/\d+/)))
+        }
+    }
 
-    exelLink = $(exelLinks[exelLinks.length-1]).attr('href')
+    let dataSheduleInt = Math.max.apply(null, dataShedule)
 
+    for (i = 0; i < exelLinks.length; i++){
+        let exelLinkLocal = $(exelLinks[i]).text()
+        if (exelLinkLocal.search(dataSheduleInt)!= -1) {
+            exelLink = $(exelLinks[i]).attr('href')
+        }
+    }
+    console.log (exelLink)
+
+    //exelLink = $(exelLinks[exelLinks.length - 1]).attr('href')
     if (exelLink != prevExel) {
     //if (false) {
         await page.goto(exelLink);
@@ -97,10 +114,10 @@ async function main() {
                 })
             })
         })
-        await browser.close().then(() => console.log('Браузер закрыт'))
     } else {
         console.log('Расписание не изменилось')
     }
+    await browser.close().then(() => console.log('Браузер закрыт'))
 }
 
 const interval = setInterval(main, 900000)
