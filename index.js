@@ -5,8 +5,10 @@ const cheerio = require('cheerio');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const path = require('path')
 const {writeFile} = require('fs')
+const pdf2img = require('pdf2img');
 
-const convertImage = require('./scripts/convertImage.js')
+//const convertImage = require('./scripts/convertImage.js')
+const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
@@ -16,11 +18,11 @@ const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 let files = [
-    { type: 'document', media: './img/schedule-1.png' },
-    { type: 'document', media: './img/schedule-2.png' },
-    { type: 'document', media: './img/schedule-3.png' },
+    { type: 'document', media: './img/schedule_1.png' },
+    { type: 'document', media: './img/schedule_2.png' },
+    { type: 'document', media: './img/schedule_3.png' },
 ]
-
+  
 let exelLink;
 let chatId;
 
@@ -106,14 +108,13 @@ async function main() {
         await page.click('div[aria-label="Download"]')
         await page.waitForTimeout(5000)
 
-        await rename('./pdf/').then(() => {
-            convertImage(`./pdf/schedule.pdf`).then(() => {
-                delFile(`./pdf/schedule.pdf`)
-                Object.keys(chatIdJson).forEach ((el) => {
-                    bot.sendMediaGroup(el, files)
-                })
-            })
-        })
+        await rename('./pdf/')
+        await convertImage(`./pdf/schedule.pdf`)
+        //delFile(`./pdf/schedule.pdf`)
+        await page.waitForTimeout(15000).then (()=>{
+        Object.keys(chatIdJson).forEach ((el) => {
+            bot.sendMediaGroup(el, files)
+        })})
     } else {
         console.log('Расписание не изменилось')
     }
