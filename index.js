@@ -7,8 +7,8 @@ const path = require('path')
 const { writeFile } = require('fs')
 const pdf2img = require('pdf2img');
 
-//const convertImage = require('./scripts/convertImage.js')
-const convertImage = require('./scripts/convertImageOnLinux.js')
+const convertImage = require('./scripts/convertImage.js')
+//const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')

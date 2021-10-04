@@ -7,8 +7,8 @@ module.exports = async (srcFolder) => {
         files.forEach((file, i) => {
             fs.unlink(srcFolder + file, err => {
                 if (err) throw err;
-                console.log('Файл успешно удалён');
             });
         })
     })
+    console.log('Файлы успешно удалён');
 }
