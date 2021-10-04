@@ -1,8 +1,14 @@
 const fs = require('fs');
 
-module.exports = (path) => {
-    fs.unlink(path, err => {
-        if (err) throw err;
-        console.log('Файл успешно удалён');
-    });
+module.exports = async (srcFolder) => {
+    console.log("srcFolder = " + srcFolder)
+    await fs.readdir(srcFolder, (err, files) => {
+        console.log("files " + files)
+        files.forEach((file, i) => {
+            fs.unlink(srcFolder + file, err => {
+                if (err) throw err;
+                console.log('Файл успешно удалён');
+            });
+        })
+    })
 }

@@ -7,8 +7,8 @@ const path = require('path')
 const { writeFile } = require('fs')
 const pdf2img = require('pdf2img');
 
-const convertImage = require('./scripts/convertImage.js')
-//const convertImage = require('./scripts/convertImageOnLinux.js')
+//const convertImage = require('./scripts/convertImage.js')
+const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
@@ -16,11 +16,11 @@ const chatIdJson = require('./chatIdJson.json')
 puppeteer.use(StealthPlugin())
 const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
-//переименовать файлы для хостинга
+
 let files = [
-    { type: 'document', media: './img/schedule-1.png' },
-    { type: 'document', media: './img/schedule-2.png' },
-    { type: 'document', media: './img/schedule-3.png' },
+    { type: 'document', media: './img/schedule 0.png' },
+    { type: 'document', media: './img/schedule 1.png' },
+    { type: 'document', media: './img/schedule 2.png' },
 ]
 
 let exelLink;
@@ -57,7 +57,7 @@ let chatId;
     })
 
     bot.on('webhook_error', (error) => {
-        console.log(error.code);  // => 'EPARSE'
+        console.log(error.code);
     });
 }());
 
@@ -93,9 +93,9 @@ async function main() {
     }
     console.log(exelLink)
 
-    //exelLink = $(exelLinks[exelLinks.length - 1]).attr('href')
+    exelLink = $(exelLinks[exelLinks.length - 1]).attr('href')
     if (exelLink != prevExel) {
-        //if (false) {
+        //if (true) {
         await page.goto(exelLink);
         content = await page.content();
         $ = cheerio.load(content);
@@ -104,21 +104,23 @@ async function main() {
             behavior: "allow",
             downloadPath: path.resolve(__dirname, './pdf')
         })
+        
+        delFile(`./img/`)
 
         await page.click('div[aria-label="Download"]')
         await page.waitForTimeout(5000)
 
         await rename('./pdf/')
-        await convertImage(`./pdf/schedule.pdf`)
-        //закомментировать del для хостинга
-        await delFile(`./pdf/schedule.pdf`)
+        await convertImage(`./pdf/schedule 0.pdf`)
+        await delFile("./pdf/")
+
+        await page.waitForTimeout(15000)
+        await rename("./img/").then(() => {
         if (!!prevExel) {
-            await page.waitForTimeout(15000).then(() => {
-                Object.keys(chatIdJson).forEach((el) => {
-                    bot.sendMediaGroup(el, files)
-                })
+            Object.keys(chatIdJson).forEach((el) => {
+                bot.sendMediaGroup(el, files)
             })
-        }
+        }})
     } else {
         console.log('Расписание не изменилось')
     }

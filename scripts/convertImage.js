@@ -6,7 +6,7 @@ module.exports = async (pdfPath) => {
     let option = {
         format : 'png',
         out_dir : './img',
-        out_prefix : path.basename(pdfPath, path.extname(pdfPath)),
+        out_prefix : path.basename("schedule", path.extname(pdfPath)),
         page : null,
         scale: 4096,
     }
