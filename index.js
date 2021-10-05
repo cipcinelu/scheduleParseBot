@@ -7,8 +7,8 @@ const path = require('path')
 const { writeFile } = require('fs')
 const pdf2img = require('pdf2img');
 
-const convertImage = require('./scripts/convertImage.js')
-//const convertImage = require('./scripts/convertImageOnLinux.js')
+//const convertImage = require('./scripts/convertImage.js')
+const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
@@ -18,9 +18,9 @@ const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 let files = [
-    { type: 'document', media: './img/schedule 0.png' },
-    { type: 'document', media: './img/schedule 1.png' },
-    { type: 'document', media: './img/schedule 2.png' },
+    { type: 'document', media: './img/schedule_0.png' },
+    { type: 'document', media: './img/schedule_1.png' },
+    { type: 'document', media: './img/schedule_2.png' },
 ]
 
 let exelLink;
@@ -111,10 +111,11 @@ async function main() {
         await page.waitForTimeout(5000)
 
         await rename('./pdf/')
-        await convertImage(`./pdf/schedule 0.pdf`)
-        await delFile("./pdf/")
+        await page.waitForTimeout(2000)
+        await convertImage('./pdf/schedule_0.pdf')
 
-        await page.waitForTimeout(15000)
+        await page.waitForTimeout(20000)
+        await delFile("./pdf/")
         await rename("./img/").then(() => {
         if (!!prevExel) {
             Object.keys(chatIdJson).forEach((el) => {
