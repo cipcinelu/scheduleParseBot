@@ -12,6 +12,7 @@ const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
+const linksTeams = require('./linksTeams.js')
 
 puppeteer.use(StealthPlugin())
 const token = process.env.TOKEN;
@@ -30,6 +31,7 @@ let chatId;
     bot.setMyCommands([
         { command: '/start', description: 'Описание' },
         { command: '/schedule', description: 'Посмотреть расписание' },
+        { command: '/linksTeams', description: 'Ссылки на teams' },
     ])
 
     bot.on('message', async (msg) => {
@@ -51,6 +53,9 @@ let chatId;
         if (text == '/schedule')
             return (bot.sendMediaGroup(chatId, files),
                 bot.sendMessage(chatId, "Loading..."))
+        if (text == '/linksTeams')
+            return bot.sendMessage(chatId,
+                linksTeams, {disable_web_page_preview: true})
         if (text == '/test')
             return (main(),
                 bot.sendMessage(chatId, "Пошло поехало"))
@@ -65,7 +70,8 @@ async function main() {
     let prevExel;
 
     const browser = await puppeteer.launch({
-        headless: true
+        headless: true,
+        executablePath: '/usr/bin/chromium-browser'
     });
 
     const page = await browser.newPage();
