@@ -31,7 +31,8 @@ let chatId;
     bot.setMyCommands([
         { command: '/start', description: 'Описание' },
         { command: '/schedule', description: 'Посмотреть расписание' },
-        { command: '/linksTeams', description: 'Ссылки на teams' },
+        { command: '/linksteams', description: 'Ссылки на teams' },
+        { command: '/donate', description: 'Донат' },
     ])
 
     bot.on('message', async (msg) => {
@@ -48,14 +49,20 @@ let chatId;
                     if (err) return console.error(err)
                 });
             return bot.sendMessage(chatId,
-                'Я пришлю расписание, как только оно изменится')
+                `Я пришлю расписание, как только оно изменится
+/schedule - пришлю расписание
+/linksteams - скину ссылку на teams
+/donate - донат`)
         }
         if (text == '/schedule')
             return (bot.sendMediaGroup(chatId, files),
                 bot.sendMessage(chatId, "Loading..."))
-        if (text == '/linksTeams')
+        if (text == '/linksteams')
             return bot.sendMessage(chatId,
                 linksTeams, {disable_web_page_preview: true})
+        if (text == '/donate')
+            return bot.sendMessage(chatId,
+                `https://www.tinkoff.ru/cf/9MdrKS2I2jN`, )
         if (text == '/test')
             return (main(),
                 bot.sendMessage(chatId, "Пошло поехало"))
@@ -122,12 +129,13 @@ async function main() {
 
         await page.waitForTimeout(20000)
         await delFile("./pdf/")
-        await rename("./img/").then(() => {
+        await rename("./img/")
+        await page.waitForTimeout(2000)
         if (!!prevExel) {
             Object.keys(chatIdJson).forEach((el) => {
                 bot.sendMediaGroup(el, files)
             })
-        }})
+        }
     } else {
         console.log('Расписание не изменилось')
     }
