@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-module.exports = async (srcFolder) => {
+let delFile = async (srcFolder) => {
     await fs.readdir(srcFolder, (err, files) => {
         console.log('список файлов до удаления: ' + files)
         if (!!files) 
@@ -14,3 +14,5 @@ module.exports = async (srcFolder) => {
     })
     console.log('Файлы успешно удалёны');
 }
+
+module.exports = delFile;

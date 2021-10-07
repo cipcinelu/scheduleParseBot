@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require('path')
 
-module.exports = async (srcFolder) => {
+let rename = async (srcFolder) => {
     await fs.readdir(srcFolder, (err, files) => {
         files.forEach((file, i) => {
             fs.rename(srcFolder + file, srcFolder + `schedule_${i}` + path.extname(file), err => {
@@ -11,3 +11,4 @@ module.exports = async (srcFolder) => {
         console.log("rename completed!");
     });
 }
+module.exports = rename

@@ -2,7 +2,7 @@ const fs      = require('fs');
 const path    = require('path');
 const pdf2img = require('pdf2img');
 
-module.exports = async (path) => {
+let convertImage = async (path) => {
 
 pdf2img.setOptions({
   type: 'png',                                // png or jpg, default jpg
@@ -19,3 +19,5 @@ pdf2img.setOptions({
   else console.log(info);
 });
 }
+
+module.exports = convertImage;

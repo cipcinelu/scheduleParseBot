@@ -1,7 +1,7 @@
 const pdfConverter = require('pdf-poppler')
 const path = require('path')
 
-module.exports = async (pdfPath) => {
+let convertImage = async (pdfPath) => {
 
     let option = {
         format : 'png',
@@ -19,3 +19,5 @@ module.exports = async (pdfPath) => {
         console.log('an error has occurred in the pdf converter ' + err)
     })
 }
+
+module.exports = convertImage;
