@@ -25,6 +25,7 @@ let files = [
 
 let exelLink;
 let chatId;
+let prevExel;
 
 (function () {
     bot.setMyCommands([
@@ -73,7 +74,6 @@ let chatId;
 }());
 
 async function main() {
-    let prevExel;
 
     const browser = await puppeteer.launch({
         headless: true,
@@ -96,16 +96,15 @@ async function main() {
     }
 
     let dataSheduleInt = Math.max.apply(null, dataShedule)
-    prevExel = exelLink
     for (i = 0; i < exelLinks.length; i++) {
         let exelLinkLocal = $(exelLinks[i]).text()
         if (exelLinkLocal.search(dataSheduleInt) != -1) {
             exelLink = $(exelLinks[i]).attr('href')
         }
     }
-    console.log(exelLink)
-
-    exelLink = $(exelLinks[exelLinks.length - 1]).attr('href')
+    console.log("exelLink " + exelLink)
+    console.log("prevExel " + prevExel)
+    //exelLink = $(exelLinks[exelLinks.length - 1]).attr('href')
     if (exelLink != prevExel) {
         //if (true) {
         await page.goto(exelLink);
@@ -124,9 +123,12 @@ async function main() {
 
         await rename('./pdf/')
         await page.waitForTimeout(2000)
-        await convertImage('./pdf/schedule_0.pdf')
 
-        await page.waitForTimeout(20000)
+        for (let i = 1; i < 4; i++) {
+            await convertImage('./pdf/schedule_0.pdf', i)
+            await page.waitForTimeout(2000)
+        }
+        await page.waitForTimeout(16000)
         await delFile("./pdf/")
         await rename("./img/")
         await page.waitForTimeout(2000)
@@ -138,7 +140,12 @@ async function main() {
     } else {
         console.log('Расписание не изменилось')
     }
+    prevExel = exelLink
+    console.log("prevExel2 " + prevExel)
+    console.log("exelLink2 " + exelLink)
+
     await browser.close().then(() => console.log('Браузер закрыт'))
 }
 
-const interval = setInterval(main, 900000)
+//const interval = setInterval(main, 900000)
+main()

@@ -1,13 +1,13 @@
 const pdfConverter = require('pdf-poppler')
 const path = require('path')
 
-let convertImage = async (pdfPath) => {
+let convertImage = async (pdfPath, i) => {
 
     let option = {
         format : 'png',
         out_dir : './img',
         out_prefix : path.basename("schedule", path.extname(pdfPath)),
-        page : null,
+        page : i,
         scale: 4096,
     }
 
