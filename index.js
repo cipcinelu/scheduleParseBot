@@ -18,12 +18,6 @@ puppeteer.use(StealthPlugin())
 const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
-let files = [
-    { type: 'document', media: './img/schedule_0.png' },
-    { type: 'document', media: './img/schedule_1.png' },
-    //{ type: 'document', media: './img/schedule_2.png' },
-]
-
 let exelLink;
 let chatId;
 let prevExel;
@@ -88,7 +82,7 @@ async function main() {
 
     const browser = await puppeteer.launch({
         headless: true,
-        //executablePath: '/usr/bin/chromium-browser'
+        executablePath: '/usr/bin/chromium-browser'
     });
 
     const page = await browser.newPage();
@@ -142,7 +136,7 @@ async function main() {
         await delFile("./pdf/")
         await rename("./img/")
         await page.waitForTimeout(2000)
-        if (!prevExel) {
+        if (!!prevExel) {
             Object.keys(chatIdJson).forEach((el) => {
                 fs.readdir('./img', (err, files) => {
                     let filesObj = []
