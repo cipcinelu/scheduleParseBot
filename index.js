@@ -5,6 +5,7 @@ const cheerio = require('cheerio');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const path = require('path')
 const { writeFile } = require('fs')
+const fs = require ('fs')
 
 //const convertImage = require('./scripts/convertImage.js')
 const convertImage = require('./scripts/convertImageOnLinux.js')
@@ -42,7 +43,8 @@ let prevExel;
 
         if (text == '/start') {
             const chatIdObject = chatIdJson;
-            chatIdObject[chatId] = name;
+            if (!!name) chatIdObject[chatId] = name;
+            else chatIdObject[chatId] = "withoutNick";
 
             writeFile('./chatIdJson.json',
                 JSON.stringify(chatIdObject), (err) => {
@@ -55,8 +57,17 @@ let prevExel;
 /donate - донат`)
         }
         if (text == '/schedule')
-            return (bot.sendMediaGroup(chatId, files),
-                bot.sendMessage(chatId, "Loading..."))
+            return (
+                fs.readdir('./img', (err, files) => {
+                    let filesObj = []
+                    files.forEach((file, i) => {
+                        if (i < 4) 
+                            filesObj.push ({ type: 'document', media: `./img/${file}` })
+                    })
+                    return bot.sendMediaGroup(chatId, filesObj)
+                }),
+                bot.sendMessage(chatId, "Loading...")
+            )
         if (text == '/linksteams')
             return bot.sendMessage(chatId,
                 linksTeams, {disable_web_page_preview: true})
@@ -104,9 +115,8 @@ async function main() {
     }
     console.log("exelLink " + exelLink)
     console.log("prevExel " + prevExel)
-    //exelLink = $(exelLinks[exelLinks.length - 1]).attr('href')
+
     if (exelLink != prevExel) {
-        //if (true) {
         await page.goto(exelLink);
         content = await page.content();
         $ = cheerio.load(content);
@@ -124,28 +134,32 @@ async function main() {
         await rename('./pdf/')
         await page.waitForTimeout(2000)
 
-        for (let i = 1; i < 4; i++) {
+        for (let i = 1; i < 5; i++) {
             await convertImage('./pdf/schedule_0.pdf', i)
-            await page.waitForTimeout(3000)
+            await page.waitForTimeout(2000)
         }
-        await page.waitForTimeout(16000)
+        await page.waitForTimeout(20000)
         await delFile("./pdf/")
         await rename("./img/")
         await page.waitForTimeout(2000)
-        if (!!prevExel) {
+        if (!prevExel) {
             Object.keys(chatIdJson).forEach((el) => {
-                bot.sendMediaGroup(el, files)
+                fs.readdir('./img', (err, files) => {
+                    let filesObj = []
+                    files.forEach((file, i) => {
+                        if (i < 3) 
+                            filesObj.push ({ type: 'document', media: `./img/${file}` })
+                    })
+                    return bot.sendMediaGroup(el, filesObj)
+                })
             })
         }
     } else {
         console.log('Расписание не изменилось')
     }
     prevExel = exelLink
-    console.log("prevExel2 " + prevExel)
-    console.log("exelLink2 " + exelLink)
 
     await browser.close().then(() => console.log('Браузер закрыт'))
 }
 
-//const interval = setInterval(main, 900000)
-main()
+const interval = setInterval(main, 900000)
