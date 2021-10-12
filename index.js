@@ -6,8 +6,8 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const path = require('path')
 const { writeFile } = require('fs')
 
-const convertImage = require('./scripts/convertImage.js')
-//const convertImage = require('./scripts/convertImageOnLinux.js')
+//const convertImage = require('./scripts/convertImage.js')
+const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
@@ -20,7 +20,7 @@ const bot = new TelegramBot(token, { polling: true });
 let files = [
     { type: 'document', media: './img/schedule_0.png' },
     { type: 'document', media: './img/schedule_1.png' },
-    { type: 'document', media: './img/schedule_2.png' },
+    //{ type: 'document', media: './img/schedule_2.png' },
 ]
 
 let exelLink;
@@ -126,7 +126,7 @@ async function main() {
 
         for (let i = 1; i < 4; i++) {
             await convertImage('./pdf/schedule_0.pdf', i)
-            await page.waitForTimeout(2000)
+            await page.waitForTimeout(3000)
         }
         await page.waitForTimeout(16000)
         await delFile("./pdf/")
