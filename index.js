@@ -13,6 +13,7 @@ const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
 const linksTeams = require('./linksTeams.js')
+const scheduleBells = require('./scheduleBells.js')
 
 puppeteer.use(StealthPlugin())
 const token = process.env.TOKEN;
@@ -26,6 +27,7 @@ let prevExel;
     bot.setMyCommands([
         { command: '/start', description: 'Описание' },
         { command: '/schedule', description: 'Посмотреть расписание' },
+        { command: '/schedulebells', description: 'Расписание звонков и обеда' },
         { command: '/linksteams', description: 'Ссылки на teams' },
         { command: '/donate', description: 'Донат' },
     ])
@@ -62,6 +64,8 @@ let prevExel;
                 }),
                 bot.sendMessage(chatId, "Loading...")
             )
+        if (text == '/schedulebells')
+                return bot.sendMessage (chatId, scheduleBells)
         if (text == '/linksteams')
             return bot.sendMessage(chatId,
                 linksTeams, {disable_web_page_preview: true})
