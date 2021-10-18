@@ -7,8 +7,8 @@ const path = require('path')
 const { writeFile } = require('fs')
 const fs = require ('fs')
 
-//const convertImage = require('./scripts/convertImage.js')
-const convertImage = require('./scripts/convertImageOnLinux.js')
+const convertImage = require('./scripts/convertImage.js')
+//const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
@@ -86,34 +86,34 @@ async function main() {
 
     const browser = await puppeteer.launch({
         headless: true,
-        executablePath: '/usr/bin/chromium-browser'
+        //executablePath: '/usr/bin/chromium-browser'
     });
 
     const page = await browser.newPage();
-    await page.goto('http://www.mgkit.ru/studentu/raspisanie-zanatij');
-    let content = await page.content();
+    // await page.goto('http://www.mgkit.ru/studentu/raspisanie-zanatij');
+    // let content = await page.content();
 
-    let $ = cheerio.load(content);
-    let exelLinks = $('span[style="line-height:19.9733px"]>a')
-    let dataShedule = []
+    // let $ = cheerio.load(content);
+    // let exelLinks = $('span[style="line-height:19.9733px"]>a')
+    // let dataShedule = []
 
-    for (i = 0; i < exelLinks.length; i++) {
-        let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(/(заняти.)/) != -1) {
-            dataShedule.push(parseInt(exelLinkLocal.match(/\d+/)))
-        }
-    }
+    // for (i = 0; i < exelLinks.length; i++) {
+    //     let exelLinkLocal = $(exelLinks[i]).text()
+    //     if (exelLinkLocal.search(/(заняти.)/) != -1) {
+    //         dataShedule.push(parseInt(exelLinkLocal.match(/\d+/)))
+    //     }
+    // }
 
-    let dataSheduleInt = Math.max.apply(null, dataShedule)
-    for (i = 0; i < exelLinks.length; i++) {
-        let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(dataSheduleInt) != -1) {
-            exelLink = $(exelLinks[i]).attr('href')
-        }
-    }
-    console.log("exelLink " + exelLink)
-    console.log("prevExel " + prevExel)
-
+    // let dataSheduleInt = Math.max.apply(null, dataShedule)
+    // for (i = 0; i < exelLinks.length; i++) {
+    //     let exelLinkLocal = $(exelLinks[i]).text()
+    //     if (exelLinkLocal.search(dataSheduleInt) != -1) {
+    //         exelLink = $(exelLinks[i]).attr('href')
+    //     }
+    // }
+    // console.log("exelLink " + exelLink)
+    // console.log("prevExel " + prevExel)
+    exelLink = 'https://docs.google.com/a/mgkit.ru/viewer?a=v&pid=sites&srcid=bWdraXQucnV8d3d3fGd4OjcxNmUyYjI2ZDM3OGMzODM'
     if (exelLink != prevExel) {
         await page.goto(exelLink);
         content = await page.content();
@@ -130,17 +130,13 @@ async function main() {
         await page.waitForTimeout(5000)
 
         await rename('./pdf/')
-        await page.waitForTimeout(2000)
 
         for (let i = 1; i < 5; i++) {
             await convertImage('./pdf/schedule_0.pdf', i)
-            await page.waitForTimeout(2000)
         }
-        await page.waitForTimeout(20000)
         await delFile("./pdf/")
-        await rename("./img/")
-        await page.waitForTimeout(2000)
-        if (!!prevExel) {
+        await rename("./img/").then (() => {
+        if (!prevExel) {
             Object.keys(chatIdJson).forEach((el) => {
                 fs.readdir('./img', (err, files) => {
                     let filesObj = []
@@ -151,7 +147,7 @@ async function main() {
                     return bot.sendMediaGroup(el, filesObj)
                 })
             })
-        }
+        }})
     } else {
         console.log('Расписание не изменилось')
     }
@@ -159,5 +155,5 @@ async function main() {
 
     await browser.close().then(() => console.log('Браузер закрыт'))
 }
-
+main()
 const interval = setInterval(main, 900000)
