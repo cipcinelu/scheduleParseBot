@@ -50,6 +50,7 @@ let prevExel;
                 `Я пришлю расписание, как только оно изменится
 /schedule - пришлю расписание
 /linksteams - скину ссылку на teams
+/schedulebells - расписание звонков и обеда
 /donate - донат`)
         }
         if (text == '/schedule')
@@ -57,9 +58,12 @@ let prevExel;
                 fs.readdir('./img', (err, files) => {
                     let filesObj = []
                     files.forEach((file, i) => {
-                        if (i < 4) 
+                        let stats = fs.statSync(`./img/${file}`)
+                        console.log ("Размер картинки " + stats.size)
+                        if (stats.size > 150000)
                             filesObj.push ({ type: 'document', media: `./img/${file}` })
                     })
+                    console.log('filesObj ' + filesObj)
                     return bot.sendMediaGroup(chatId, filesObj)
                 }),
                 bot.sendMessage(chatId, "Loading...")
@@ -86,7 +90,7 @@ async function main() {
 
     const browser = await puppeteer.launch({
         headless: true,
-        //executablePath: '/usr/bin/chromium-browser'
+        executablePath: '/usr/bin/chromium-browser'
     });
 
     const page = await browser.newPage();
@@ -113,7 +117,6 @@ async function main() {
     }
     console.log("exelLink " + exelLink)
     console.log("prevExel " + prevExel)
-    exelLink = 'https://docs.google.com/a/mgkit.ru/viewer?a=v&pid=sites&srcid=bWdraXQucnV8d3d3fGd4OjcxNmUyYjI2ZDM3OGMzODM'
     if (exelLink != prevExel) {
         await page.goto(exelLink);
         content = await page.content();
@@ -140,11 +143,10 @@ async function main() {
                     let filesObj = []
                     files.forEach((file, i) => {
                         let stats = fs.statSync(`./img/${file}`)
-                        console.log ("Размер картинки " + stats.size)
+                        console.log ("Size img " + stats.size)
                         if (stats.size > 150000)
                             filesObj.push ({ type: 'document', media: `./img/${file}` })
                     })
-                    console.log('filesObj ' + filesObj)
                     return bot.sendMediaGroup(el, filesObj)
                 })
             })
@@ -156,5 +158,5 @@ async function main() {
 
     await browser.close().then(() => console.log('Браузер закрыт'))
 }
-main()
+
 const interval = setInterval(main, 900000)

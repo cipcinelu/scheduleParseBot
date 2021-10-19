@@ -17,6 +17,7 @@ let convertImage = (pdfPath, i) => {
             })
             .catch(err => {
                 console.log('an error has occurred in the pdf converter ' + err)
+                resolve()
             })
     })
 }
