@@ -19,9 +19,10 @@ puppeteer.use(StealthPlugin())
 const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
-let exelLink;
 let chatId;
-let prevExel;
+
+let dataShedule;
+let prevDataShedule
 
 (function () {
     bot.setMyCommands([
@@ -63,7 +64,6 @@ let prevExel;
                         if (stats.size > 150000)
                             filesObj.push ({ type: 'document', media: `./img/${file}` })
                     })
-                    console.log('filesObj ' + filesObj)
                     return bot.sendMediaGroup(chatId, filesObj)
                 }),
                 bot.sendMessage(chatId, "Loading...")
@@ -87,7 +87,7 @@ let prevExel;
 }());
 
 async function main() {
-
+    let exelLink;
     const browser = await puppeteer.launch({
         headless: true,
         executablePath: '/usr/bin/chromium-browser'
@@ -99,25 +99,27 @@ async function main() {
 
     let $ = cheerio.load(content);
     let exelLinks = $('span[style="line-height:19.9733px"]>a')
-    let dataShedule = []
+    let dataSheduleArray = []
 
     for (i = 0; i < exelLinks.length; i++) {
         let exelLinkLocal = $(exelLinks[i]).text()
         if (exelLinkLocal.search(/(заняти.)/) != -1) {
-            dataShedule.push(parseInt(exelLinkLocal.match(/\d+/)))
+            dataSheduleArray.push(parseInt(exelLinkLocal.match(/\d+/)))
         }
     }
 
-    let dataSheduleInt = Math.max.apply(null, dataShedule)
+    dataShedule = Math.max.apply(null, dataSheduleArray)
+
     for (i = 0; i < exelLinks.length; i++) {
         let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(dataSheduleInt) != -1) {
+        if (exelLinkLocal.search(dataShedule) != -1) {
             exelLink = $(exelLinks[i]).attr('href')
         }
     }
-    console.log("exelLink " + exelLink)
-    console.log("prevExel " + prevExel)
-    if (exelLink != prevExel) {
+    console.log("dataShedule " + dataShedule)
+    console.log("prevData " + prevDataShedule)
+
+    if (dataShedule != prevDataShedule) {
         await page.goto(exelLink);
         content = await page.content();
         $ = cheerio.load(content);
@@ -137,7 +139,7 @@ async function main() {
 
         await delFile("./pdf/")
         .then (() => {
-        if (!!prevExel) {
+        if (!!prevDataShedule) {
             Object.keys(chatIdJson).forEach((el) => {
                 fs.readdir('./img', (err, files) => {
                     let filesObj = []
@@ -154,8 +156,8 @@ async function main() {
     } else {
         console.log('Расписание не изменилось')
     }
-    prevExel = exelLink
 
+    prevDataShedule = dataShedule
     await browser.close().then(() => console.log('Браузер закрыт'))
 }
 
