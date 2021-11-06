@@ -8,12 +8,12 @@ let delFile = (srcFolder) => {
                 files.forEach((file, i) => {
                     fs.unlink(srcFolder + file, err => {
                         if (err) throw err;
-                        resolve ()
                     });
                 })
             }
+            resolve ()
+
         })
-        console.log('Файлы успешно удалёны');
     })
 }
 

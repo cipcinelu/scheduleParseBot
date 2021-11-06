@@ -7,8 +7,8 @@ const path = require('path')
 const { writeFile } = require('fs')
 const fs = require ('fs')
 
-//const convertImage = require('./scripts/convertImage.js')
-const convertImage = require('./scripts/convertImageOnLinux.js')
+const convertImage = require('./scripts/convertImage.js')
+//const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
@@ -90,7 +90,7 @@ async function main() {
     let exelLink;
     const browser = await puppeteer.launch({
         headless: true,
-        executablePath: '/usr/bin/chromium-browser'
+        //executablePath: '/usr/bin/chromium-browser'
     });
 
     const page = await browser.newPage();
@@ -130,8 +130,8 @@ async function main() {
         })
         
         await delFile(`./img/`)
-
         await page.click('div[aria-label="Download"]')
+
         await page.waitForTimeout(5000)
 
         await rename('./pdf/')
@@ -141,7 +141,7 @@ async function main() {
         .then (() => {
         if (!!prevDataShedule) {
             Object.keys(chatIdJson).forEach((el) => {
-                fs.readdir('./img', (err, files) => {
+               fs.readdir('./img', (err, files) => {
                     let filesObj = []
                     files.forEach((file, i) => {
                         let stats = fs.statSync(`./img/${file}`)
@@ -150,7 +150,8 @@ async function main() {
                             filesObj.push ({ type: 'document', media: `./img/${file}` })
                     })
                     return bot.sendMediaGroup(el, filesObj)
-                })
+                    //return bot.sendFile(el, { type: 'document', media: './pdf/schedule_0.pdf' })     
+               })
             })
         }})
     } else {
@@ -160,5 +161,5 @@ async function main() {
     prevDataShedule = dataShedule
     await browser.close().then(() => console.log('Браузер закрыт'))
 }
-
+main()
 const interval = setInterval(main, 900000)
