@@ -12,7 +12,6 @@ let delFile = (srcFolder) => {
                 })
             }
             resolve ()
-
         })
     })
 }

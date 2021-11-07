@@ -7,8 +7,6 @@ const path = require('path')
 const { writeFile } = require('fs')
 const fs = require ('fs')
 
-const convertImage = require('./scripts/convertImage.js')
-//const convertImage = require('./scripts/convertImageOnLinux.js')
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
@@ -56,17 +54,8 @@ let prevDataShedule
         }
         if (text == '/schedule')
             return (
-                fs.readdir('./img', (err, files) => {
-                    let filesObj = []
-                    files.forEach((file, i) => {
-                        let stats = fs.statSync(`./img/${file}`)
-                        console.log ("Размер картинки " + stats.size)
-                        if (stats.size > 150000)
-                            filesObj.push ({ type: 'document', media: `./img/${file}` })
-                    })
-                    return bot.sendMediaGroup(chatId, filesObj)
-                }),
-                bot.sendMessage(chatId, "Loading...")
+                bot.sendMessage(chatId, "Loading..."),
+                bot.sendDocument(chatId, './pdf/schedule_0.pdf' )
             )
         if (text == '/schedulebells')
                 return bot.sendMessage (chatId, scheduleBells)
@@ -90,7 +79,7 @@ async function main() {
     let exelLink;
     const browser = await puppeteer.launch({
         headless: true,
-        //executablePath: '/usr/bin/chromium-browser'
+        executablePath: '/usr/bin/chromium-browser'
     });
 
     const page = await browser.newPage();
@@ -120,6 +109,7 @@ async function main() {
     console.log("prevData " + prevDataShedule)
 
     if (dataShedule != prevDataShedule) {
+        delFile('./pdf/')
         await page.goto(exelLink);
         content = await page.content();
         $ = cheerio.load(content);
@@ -129,29 +119,15 @@ async function main() {
             downloadPath: path.resolve(__dirname, './pdf')
         })
         
-        await delFile(`./img/`)
         await page.click('div[aria-label="Download"]')
 
         await page.waitForTimeout(5000)
 
         await rename('./pdf/')
-        await convertImage('./pdf/schedule_0.pdf')
-
-        await delFile("./pdf/")
         .then (() => {
         if (!!prevDataShedule) {
             Object.keys(chatIdJson).forEach((el) => {
-               fs.readdir('./img', (err, files) => {
-                    let filesObj = []
-                    files.forEach((file, i) => {
-                        let stats = fs.statSync(`./img/${file}`)
-                        console.log ("Size img " + stats.size)
-                        if (stats.size > 150000)
-                            filesObj.push ({ type: 'document', media: `./img/${file}` })
-                    })
-                    return bot.sendMediaGroup(el, filesObj)
-                    //return bot.sendFile(el, { type: 'document', media: './pdf/schedule_0.pdf' })     
-               })
+                return bot.sendDocument(el, './pdf/schedule_0.pdf' )
             })
         }})
     } else {
@@ -161,5 +137,5 @@ async function main() {
     prevDataShedule = dataShedule
     await browser.close().then(() => console.log('Браузер закрыт'))
 }
-main()
+
 const interval = setInterval(main, 900000)
