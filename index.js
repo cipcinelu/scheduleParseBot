@@ -5,13 +5,13 @@ const cheerio = require('cheerio');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const path = require('path')
 const { writeFile } = require('fs')
-const fs = require ('fs')
 
 const rename = require('./scripts/rename.js')
 const delFile = require('./scripts/delFile')
 const chatIdJson = require('./chatIdJson.json')
 const linksTeams = require('./linksTeams.js')
 const scheduleBells = require('./scheduleBells.js')
+const startMessage = require ('./startMessage')
 
 puppeteer.use(StealthPlugin())
 const token = process.env.TOKEN;
@@ -45,12 +45,8 @@ let prevDataShedule
                 JSON.stringify(chatIdObject), (err) => {
                     if (err) return console.error(err)
                 });
-            return bot.sendMessage(chatId,
-                `Я пришлю расписание, как только оно изменится
-/schedule - пришлю расписание
-/linksteams - скину ссылку на teams
-/schedulebells - расписание звонков и обеда
-/donate - донат`)
+            return bot.sendMessage(chatId, startMessage, 
+                        {parse_mode:'HTML', disable_web_page_preview: true})
         }
         if (text == '/schedule')
             return (
