@@ -2,5 +2,5 @@ node_modules
 img
 pdf
 /.env
-/chatIdJson.json
+/dataForMessage/chatIdJson.json
 /package-lock.json

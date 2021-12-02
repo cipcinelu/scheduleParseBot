@@ -1,26 +1,19 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const puppeteer = require('puppeteer-extra');
-const cheerio = require('cheerio');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
-const path = require('path')
 const { writeFile } = require('fs')
-const fs = require ('fs')
 
-const rename = require('./scripts/rename.js')
-const delFile = require('./scripts/delFile')
-const chatIdJson = require('./chatIdJson.json')
-const linksTeams = require('./linksTeams.js')
-const scheduleBells = require('./scheduleBells.js')
+const chatIdJson = require('./dataForMessage/chatIdJson.json')
+const linksTeams = require('./dataForMessage/linksTeams.js')
+const scheduleBells = require('./dataForMessage/scheduleBells.js')
+const parser = require('./parser.js')
 
 puppeteer.use(StealthPlugin())
 const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 let chatId;
-
-let dataShedule;
-let prevDataShedule
 
 (function () {
     bot.setMyCommands([
@@ -41,7 +34,7 @@ let prevDataShedule
             if (!!name) chatIdObject[chatId] = name;
             else chatIdObject[chatId] = "withoutNick";
 
-            writeFile('./chatIdJson.json',
+            writeFile('./dataForMessage/chatIdJson.json',
                 JSON.stringify(chatIdObject), (err) => {
                     if (err) return console.error(err)
                 });
@@ -64,78 +57,14 @@ let prevDataShedule
                 linksTeams, {disable_web_page_preview: true})
         if (text == '/donate')
             return bot.sendMessage(chatId,
-                `https://www.tinkoff.ru/cf/9MdrKS2I2jN`, )
+                `https://www.tinkoff.ru/cf/9MdrKS2I2jN`)
         if (text == '/test')
-            return (main(),
+            return (parser(bot),
                 bot.sendMessage(chatId, "Пошло поехало"))
     })
-
     bot.on('webhook_error', (error) => {
-        console.log(error.code);
+        console.log(error.code)
     });
 }());
 
-async function main() {
-    let exelLink;
-    const browser = await puppeteer.launch({
-        headless: true,
-        executablePath: '/usr/bin/chromium-browser'
-    });
-
-    const page = await browser.newPage();
-    await page.goto('http://www.mgkit.ru/studentu/raspisanie-zanatij');
-    let content = await page.content();
-
-    let $ = cheerio.load(content);
-    let exelLinks = $('span[style="line-height:19.9733px"]>a')
-    let dataSheduleArray = []
-
-    for (i = 0; i < exelLinks.length; i++) {
-        let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(/(заняти.)/) != -1) {
-            dataSheduleArray.push(parseInt(exelLinkLocal.match(/\d+/)))
-        }
-    }
-
-    dataShedule = Math.max.apply(null, dataSheduleArray)
-
-    for (i = 0; i < exelLinks.length; i++) {
-        let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(dataShedule) != -1) {
-            exelLink = $(exelLinks[i]).attr('href')
-        }
-    }
-    console.log("dataShedule " + dataShedule)
-    console.log("prevData " + prevDataShedule)
-
-    if (dataShedule != prevDataShedule) {
-        delFile('./pdf/')
-        await page.goto(exelLink);
-        content = await page.content();
-        $ = cheerio.load(content);
-
-        await page._client.send("Page.setDownloadBehavior", {
-            behavior: "allow",
-            downloadPath: path.resolve(__dirname, './pdf')
-        })
-        
-        await page.click('div[aria-label="Download"]')
-
-        await page.waitForTimeout(5000)
-
-        await rename('./pdf/')
-        .then (() => {
-        if (!!prevDataShedule) {
-            Object.keys(chatIdJson).forEach((el) => {
-                return bot.sendDocument(el, './pdf/schedule_0.pdf' )
-            })
-        }})
-    } else {
-        console.log('Расписание не изменилось')
-    }
-
-    prevDataShedule = dataShedule
-    await browser.close().then(() => console.log('Браузер закрыт'))
-}
-
-const interval = setInterval(main, 900000)
+setInterval(parser, 100000, bot)
