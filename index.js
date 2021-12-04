@@ -7,7 +7,7 @@ const { writeFile } = require('fs')
 const chatIdJson = require('./dataForMessage/chatIdJson.json')
 const linksTeams = require('./dataForMessage/linksTeams.js')
 const scheduleBells = require('./dataForMessage/scheduleBells.js')
-const parser = require('./parser.js')
+const parser = require('./scripts/parser.js')
 
 puppeteer.use(StealthPlugin())
 const token = process.env.TOKEN;

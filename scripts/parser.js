@@ -4,9 +4,9 @@ const cheerio = require('cheerio');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const path = require('path')
 
-const rename = require('./scripts/rename.js')
-const delFile = require('./scripts/delFile')
-const chatIdJson = require('./dataForMessage/chatIdJson.json')
+const rename = require('./rename.js')
+const delFile = require('./delFile')
+const chatIdJson = require('../dataForMessage/chatIdJson.json')
 
 puppeteer.use(StealthPlugin())
 
@@ -15,6 +15,7 @@ let prevDataShedule
 
 let parser = async (bot) => {
     let exelLink;
+    let exelText;
     const browser = await puppeteer.launch({
         headless: true,
         //executablePath: '/usr/bin/google-chrome'
@@ -41,6 +42,7 @@ let parser = async (bot) => {
         let exelLinkLocal = $(exelLinks[i]).text()
         if (exelLinkLocal.search(dataShedule) != -1) {
             exelLink = $(exelLinks[i]).attr('href')
+            exelText = $(exelLinks[i]).html()
         }
     }
     console.log("dataShedule " + dataShedule)
@@ -54,7 +56,7 @@ let parser = async (bot) => {
 
         await page._client.send("Page.setDownloadBehavior", {
             behavior: "allow",
-            downloadPath: path.resolve(__dirname, './pdf')
+            downloadPath: path.resolve(__dirname, '../pdf')
         })
         
         await page.click('div[aria-label="Download"]')
@@ -65,8 +67,9 @@ let parser = async (bot) => {
         .then (() => {
         if (!!prevDataShedule) {
             Object.keys(chatIdJson).forEach((el) => {
-                return bot.sendDocument(el, './pdf/schedule_0.pdf' )
-            })
+                return bot.sendDocument(el, './pdf/schedule_0.pdf', 
+                                            {caption: exelText} )
+            })                  
         }})
     } else console.log('Расписание не изменилось')
 
