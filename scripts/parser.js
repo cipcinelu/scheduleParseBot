@@ -1,4 +1,3 @@
-require('dotenv').config();
 const puppeteer = require('puppeteer-extra');
 const cheerio = require('cheerio');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
@@ -26,9 +25,9 @@ let parser = async (bot) => {
     let content = await page.content();
 
     let $ = cheerio.load(content);
-    let exelLinks = $('span[style="line-height:19.9733px"]>a')
+    let exelLinks = $('div[style="color:rgb(68,68,68)"]>a')
     let dataSheduleArray = []
-
+//находим ссылки с текстом "занятия" и вытаскиваем числа
     for (i = 0; i < exelLinks.length; i++) {
         let exelLinkLocal = $(exelLinks[i]).text()
         if (exelLinkLocal.search(/(заняти.)/) != -1) {
@@ -42,7 +41,7 @@ let parser = async (bot) => {
         let exelLinkLocal = $(exelLinks[i]).text()
         if (exelLinkLocal.search(dataShedule) != -1) {
             exelLink = $(exelLinks[i]).attr('href')
-            exelText = $(exelLinks[i]).html()
+            exelText = $(exelLinks[i]).html().replace('<font size="3">', "").replace('</font>', "")
         }
     }
     console.log("dataShedule " + dataShedule)
