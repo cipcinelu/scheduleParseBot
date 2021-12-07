@@ -17,7 +17,7 @@ let parser = async (bot) => {
     let exelText;
     const browser = await puppeteer.launch({
         headless: true,
-        //executablePath: '/usr/bin/google-chrome'
+        executablePath: '/usr/bin/google-chrome'
     });
 
     const page = await browser.newPage();
@@ -25,8 +25,9 @@ let parser = async (bot) => {
     let content = await page.content();
 
     let $ = cheerio.load(content);
-    let exelLinks = $('div[style="color:rgb(68,68,68)"]>a')
+    let exelLinks = $('a')
     let dataSheduleArray = []
+
 //находим ссылки с текстом "занятия" и вытаскиваем числа
     for (i = 0; i < exelLinks.length; i++) {
         let exelLinkLocal = $(exelLinks[i]).text()
@@ -36,10 +37,10 @@ let parser = async (bot) => {
     }
 
     dataShedule = Math.max.apply(null, dataSheduleArray)
-
+//находим ссылки с нужным числом
     for (i = 0; i < exelLinks.length; i++) {
         let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(dataShedule) != -1) {
+        if (exelLinkLocal.search(/(заняти.)/) != -1 && exelLinkLocal.search(dataShedule) != -1) {
             exelLink = $(exelLinks[i]).attr('href')
             exelText = $(exelLinks[i]).html().replace('<font size="3">', "").replace('</font>', "")
         }
