@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer-extra');
-const cheerio = require('cheerio');
+const {load} = require('cheerio');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
-const path = require('path')
+const {resolve} = require('path')
 
 const rename = require('./rename.js')
 const delFile = require('./delFile')
@@ -17,14 +17,14 @@ let parser = async (bot) => {
     let exelText;
     const browser = await puppeteer.launch({
         headless: true,
-        executablePath: '/usr/bin/google-chrome'
+        //executablePath: '/usr/bin/google-chrome'
     });
 
     const page = await browser.newPage();
     await page.goto('http://www.mgkit.ru/studentu/raspisanie-zanatij');
     let content = await page.content();
 
-    let $ = cheerio.load(content);
+    let $ = load(content);
     let exelLinks = $('a')
     let dataSheduleArray = []
 
@@ -52,11 +52,11 @@ let parser = async (bot) => {
         delFile('./pdf/')
         await page.goto(exelLink)
         content = await page.content()
-        $ = cheerio.load(content)
+        $ = load(content)
 
         await page._client.send("Page.setDownloadBehavior", {
             behavior: "allow",
-            downloadPath: path.resolve(__dirname, '../pdf')
+            downloadPath: resolve(__dirname, '../pdf')
         })
         
         await page.click('div[aria-label="Download"]')
@@ -68,7 +68,8 @@ let parser = async (bot) => {
         if (!!prevDataShedule) {
             Object.keys(chatIdJson).forEach((el) => {
                 return bot.sendDocument(el, './pdf/schedule_0.pdf', 
-                                            {caption: exelText} )
+                                            {caption: exelText},
+                                            {contentType: 'application/x-pdf'} )
             })                  
         }})
     } else console.log('Расписание не изменилось')

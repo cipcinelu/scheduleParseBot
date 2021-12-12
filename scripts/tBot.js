@@ -5,7 +5,6 @@ const chatIdJson = require('../dataForMessage/chatIdJson.json')
 const startMessage = require ('../dataForMessage/startMessage')
 const linksTeams = require('../dataForMessage/linksTeams.js')
 const scheduleBells = require('../dataForMessage/scheduleBells.js')
-
 const parser = require('./parser.js')
 
 const tBot = (bot) => {
