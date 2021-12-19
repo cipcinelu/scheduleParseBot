@@ -74,9 +74,13 @@ let parser = async (bot) => {
         .then (() => {
         if (!!prevDataShedule) {
             Object.keys(chatIdJson).forEach((el) => {
-                return bot.sendDocument(el, './pdf/schedule_0.pdf', 
-                                            {caption: exelText},
-                                            {contentType: 'application/x-pdf'} )
+                return bot.sendDocument
+                    (el, './pdf/schedule_0.pdf', 
+                        {caption: exelText},
+                        {contentType: 'application/x-pdf'} )
+                        .catch (() => {
+                            console.log (`${el} заблокировал бота`)
+                        })
             })                  
         }})
     } else console.log('Расписание не изменилось')
