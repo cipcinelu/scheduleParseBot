@@ -37,14 +37,21 @@ let parser = async (bot) => {
     }
 
     dataShedule = Math.max.apply(null, dataSheduleArray)
-//находим ссылки с нужным числом
+
+//находим ссылку с нужным числом
+    const regexp = new RegExp(dataShedule + '\\.');
+
     for (i = 0; i < exelLinks.length; i++) {
         let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(/(заняти.)/) != -1 && exelLinkLocal.search(dataShedule) != -1) {
+        if (exelLinkLocal.search(/(заняти.)/) != -1 
+                    && exelLinkLocal.search(regexp) != -1) {
             exelLink = $(exelLinks[i]).attr('href')
-            exelText = $(exelLinks[i]).html().replace('<font size="3">', "").replace('</font>', "")
+            exelText = $(exelLinks[i]).html()
+                .replace('<font size="3">', "")
+                .replace('</font>', "")
         }
     }
+
     console.log("dataShedule " + dataShedule)
     console.log("prevData " + prevDataShedule)
 
