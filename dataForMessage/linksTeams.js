@@ -1,20 +1,17 @@
 module.exports = 
      `Александров Роман Викторович	https://bit.ly/2KwcXmg
-     Анастасян Карен Гришаевич	https://bit.ly/38eAVdM
-     Асташов Владимир Федорович	https://bit.ly/2JhD0xi
      Бикжанов Ильдар Айдарович	https://bit.ly/2WC54OP
      Блесткина Ольга Владимировна	https://bit.ly/3aw0HNu
      Большева Светлана Юрьевна	https://bit.ly/3avAInW
-     Бунькин Виктор Иванович	https://bit.ly/38o6uBV
      Вернер Елена Викторовна	https://bit.ly/3npHO2n
      Воронина Анна Александровна	https://bit.ly/3nuHlvU
+     Валеев Михаил Владимирович	https://bit.ly/3ofKrW5
      Герасимов Дмитрий Борисович	https://bit.ly/38gPUUN
      Глускер Александр Игоревич	https://bit.ly/2KliVqq
      Гулиян Геворг Борисович	https://bit.ly/3nIUrFS
      Дзюба Ирина Георгиевна	https://bit.ly/3kF9ilL
      Димитров Ирина Леонидовна	https://bit.ly/3pio6WR
-     Доррер Татьяна Васильевна	https://bit.ly/2Mqnr89
-     Елдашева Лариса Владимировна	https://bit.ly/3qSsn3Z
+     Елдашева Лариса Владимировна	https://bit.ly/3EILuoG
      Жукова Оксана Евгеньевна	https://bit.ly/3rs57Lx
      Иваненко Петр Олегович	https://bit.ly/37EzHJM
      Иванников Сергей Анатольевич	https://bit.ly/3rbS8gN
@@ -34,8 +31,7 @@ module.exports =
      Малышев Михаил Николаевич	https://bit.ly/3nwDlLa
      Манохина Марина Михайловна	https://bit.ly/2Ki5qrx
      Манохина Екатерина Владимировна	https://bit.ly/3mBT5eB
-     Маркова Виктория Юрьевна	https://bit.ly/38qUb7V
-     Мартынова Татьяна Алексеевна	https://bit.ly/3hbQ3MZ
+     Маркова Виктория Юрьевна	https://bit.ly/3ktmJES
      Мельникова Светлана Владимировна	https://bit.ly/3aCHl9i
      Миланова Ирина Анатольевна	https://bit.ly/2M1lNsX
      Мухортова Наталья Николаевна	https://bit.ly/3pamVIY
@@ -43,7 +39,6 @@ module.exports =
      Наумов Иван Владимирович	https://bit.ly/3nKL3Bu
      Новиков Дмитрий Олегович	https://bit.ly/37oftDW
      Орлова Светлана Валерьевна	https://bit.ly/2KHRG99
-     Павлов Алексей Владимирович	https://bit.ly/3ros3Lh
      Панкова Валентина Геннадьевна	https://bit.ly/38sX8ot
      Переверзева Владислава Игоревна	https://bit.ly/3gXTiYk
      Переверзева Елена Анатольевна	https://bit.ly/3pgyhLG
@@ -51,8 +46,6 @@ module.exports =
      Преснов Семён Сергеевич	https://bit.ly/37sm6oV
      Ратвин Константин Александрович	https://bit.ly/2KQyRAA
      Салахова Людмила Васильевна	https://bit.ly/2YsSQg1
-     Самойлова Екатерина Никитична	https://bit.ly/34DvaVY
-     Сергиевская Татьяна Олеговна	https://bit.ly/2KtvX4X
      Сидельников Лев Владимирович	https://bit.ly/38xC3cL
      Сидоров Сергей Александрович	https://bit.ly/2WBbCxk
      Симонова Наталья Владимировна	https://bit.ly/3ha0nW2
@@ -60,8 +53,6 @@ module.exports =
      Сурикова Ольга Александровна	https://bit.ly/34zzN3q
      Смекаев Дмитрий Станиславович	https://bit.ly/2YhwqxZ
      Тарасова Елена Анатольевна	https://bit.ly/3auORmN
-     Томашевская Виктория Вячеславовна	https://bit.ly/3r5eJvc
-     Фомин Олег Юрьевич	https://bit.ly/3oZ9ITi
+     Фомин Олег Юрьевич	https://bit.ly/3E87Q2t
      Фунтикова Анастасия Михайловна	https://bit.ly/3nLnNnc
-     Чеснокова Елена Альбертовна	https://bit.ly/3nxGRoS
-     Шестакова Ольга Николаевна 	https://bit.ly/3ajg9Mf`
+     Чеснокова Елена Альбертовна	https://bit.ly/3GSpJ6v`
