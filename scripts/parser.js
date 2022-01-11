@@ -27,28 +27,30 @@ let parser = async (bot) => {
     let $ = load(content);
     let exelLinks = $('a')
     let dataSheduleArray = []
+    let allDataSheduleArray = []
 
 //находим ссылки с текстом "занятия" и вытаскиваем числа
     for (i = 0; i < exelLinks.length; i++) {
         let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(/(заняти.)/) != -1) {
+        if (exelLinkLocal.search(/(кабинетов.)/) != -1) {
             dataSheduleArray.push(parseInt(exelLinkLocal.match(/\d+/)))
         }
+        allDataSheduleArray.push($(exelLinks[i]))
     }
 
     dataShedule = Math.max.apply(null, dataSheduleArray)
 
 //находим ссылку с нужным числом
     const regexp = new RegExp(dataShedule + '\\.');
-
-    for (i = 0; i < exelLinks.length; i++) {
-        let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(/(заняти.)/) != -1 
-                    && exelLinkLocal.search(regexp) != -1) {
-            exelLink = $(exelLinks[i]).attr('href')
-            exelText = $(exelLinks[i]).html()
-                .replace('<font size="3">', "")
-                .replace('</font>', "")
+    
+    for (let i = 0; i < allDataSheduleArray.length; i++) {
+        let allText = allDataSheduleArray[i].text()
+        if (allText.search(/(кабинетов.)/) != -1
+                                && allText.search(regexp) != -1) {
+            let schedule = allDataSheduleArray[i-1]
+            exelLink = schedule.attr('href')
+            exelText = allText.replace('Расписание кабинетов', 
+                                        'Изменения в расписании учебных занятий')
         }
     }
 
@@ -66,7 +68,7 @@ let parser = async (bot) => {
             downloadPath: resolve(__dirname, '../pdf')
         })
         
-        await page.click('div[aria-label="Download"]')
+        await page.click('div[aria-label="Скачать"]')
 
         await page.waitForTimeout(5000)
 

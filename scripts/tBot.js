@@ -50,9 +50,9 @@ const tBot = (bot) => {
             return (parser(bot),
                 bot.sendMessage(chatId, "Пошло поехало"))
     })
-    bot.on('webhook_error', (error) => {
-        console.log(error.code)
-    });
+    // bot.on('webhook_error', (error) => {
+    //     console.log(error.code)
+    // });
 }
 
 module.exports = tBot
