@@ -9,12 +9,10 @@ const chatIdJson = require('../dataForMessage/chatIdJson.json')
 
 puppeteer.use(StealthPlugin())
 
-let dataShedule;
-let prevDataShedule
+let exelLink;
+let prevExelLink
 
 let parser = async (bot) => {
-    let exelLink;
-    let exelText;
     const browser = await puppeteer.launch({
         headless: true,
         //executablePath: '/usr/bin/google-chrome'
@@ -25,39 +23,13 @@ let parser = async (bot) => {
     let content = await page.content();
 
     let $ = load(content);
-    let exelLinks = $('a')
-    let dataSheduleArray = []
-    let allDataSheduleArray = []
-
-//находим ссылки с текстом "занятия" и вытаскиваем числа
-    for (i = 0; i < exelLinks.length; i++) {
-        let exelLinkLocal = $(exelLinks[i]).text()
-        if (exelLinkLocal.search(/(кабинетов.)/) != -1) {
-            dataSheduleArray.push(parseInt(exelLinkLocal.match(/\d+/)))
-        }
-        allDataSheduleArray.push($(exelLinks[i]))
-    }
-
-    dataShedule = Math.max.apply(null, dataSheduleArray)
-
-//находим ссылку с нужным числом
-    const regexp = new RegExp(dataShedule + '\\.');
+    let exelLinks = $('h2>span>a:contains("Изменения в расписании")')
+    exelLink = $(exelLinks[exelLinks.length - 1]).attr('href')
     
-    for (let i = 0; i < allDataSheduleArray.length; i++) {
-        let allText = allDataSheduleArray[i].text()
-        if (allText.search(/(кабинетов.)/) != -1
-                                && allText.search(regexp) != -1) {
-            let schedule = allDataSheduleArray[i-1]
-            exelLink = schedule.attr('href')
-            exelText = allText.replace('Расписание кабинетов', 
-                                        'Изменения в расписании учебных занятий')
-        }
-    }
+    console.log("exelLink " + exelLink)
+    console.log("prevExelLink " + prevExelLink)
 
-    console.log("dataShedule " + dataShedule)
-    console.log("prevData " + prevDataShedule)
-
-    if (dataShedule != prevDataShedule) {
+    if (exelLink != prevExelLink) {
         delFile('./pdf/')
         await page.goto(exelLink)
         content = await page.content()
@@ -74,11 +46,10 @@ let parser = async (bot) => {
 
         await rename('./pdf/')
         .then (() => {
-        if (!!prevDataShedule) {
+        if (!!prevExelLink) {
             Object.keys(chatIdJson).forEach((el) => {
                 return bot.sendDocument
-                    (el, './pdf/schedule_0.pdf', 
-                        {caption: exelText},
+                    (el, './pdf/schedule_0.pdf',
                         {contentType: 'application/x-pdf'} )
                         .catch (() => {
                             console.log (`${el} заблокировал бота`)
@@ -87,7 +58,7 @@ let parser = async (bot) => {
         }})
     } else console.log('Расписание не изменилось')
 
-    prevDataShedule = dataShedule
+    prevExelLink = exelLink
     await browser.close().then(() => console.log('Браузер закрыт'))
 }
 
