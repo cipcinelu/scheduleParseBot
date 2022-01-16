@@ -40,7 +40,7 @@ let parser = async (bot) => {
             downloadPath: resolve(__dirname, '../pdf')
         })
         
-        await page.click('div[aria-label="Скачать"]')
+        await page.click('div[aria-label="下載"]')
 
         await page.waitForTimeout(5000)
 
