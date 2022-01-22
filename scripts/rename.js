@@ -3,6 +3,7 @@ const path = require('path')
 
 let rename = (srcFolder) => {
     return new Promise (resolve => {
+        console.log(srcFolder)
         fs.readdir(srcFolder, (err, files) => {
             files.forEach((file, i) => {
                 fs.rename(srcFolder + file, srcFolder + `schedule_${i}` + path.extname(file), err => {
