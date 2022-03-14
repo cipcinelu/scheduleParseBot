@@ -9,5 +9,4 @@ const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 tBot(bot)
-
 setInterval(parser, 900000, bot)

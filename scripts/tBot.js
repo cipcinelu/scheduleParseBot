@@ -10,8 +10,8 @@ const parser = require('./parser.js')
 const tBot = (bot) => {
     bot.setMyCommands([
         { command: '/start', description: 'Описание' },
-        { command: '/schedule', description: 'Посмотреть расписание' },
-        { command: '/schedulebells', description: 'Расписание звонков и обеда' },
+        { command: '/sh', description: 'Посмотреть расписание' },
+        { command: '/shbells', description: 'Расписание звонков и обеда' },
         { command: '/linksteams', description: 'Ссылки на teams' },
         { command: '/donate', description: 'Донат' },
     ])
@@ -33,12 +33,12 @@ const tBot = (bot) => {
             return bot.sendMessage(chatId, startMessage, 
                 {parse_mode:'HTML', disable_web_page_preview: true})
         }
-        if (text == '/schedule')
+        if (text == '/schedule' || text == '/sh')
             return (
                 bot.sendMessage(chatId, "Loading..."),
                 bot.sendDocument(chatId, './pdf/schedule_0.pdf' )
             )
-        if (text == '/schedulebells')
+        if (text == '/schedulebells' || text == '/shbells')
                 return bot.sendMessage (chatId, scheduleBells)
         if (text == '/linksteams')
             return bot.sendMessage(chatId,

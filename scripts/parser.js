@@ -14,11 +14,12 @@ let parser = async (bot) => {
 
     const browser = await puppeteer.launch({
         headless: true,
-        executablePath: '/usr/bin/google-chrome'
+        //executablePath: '/usr/bin/google-chrome'
     });
 
     const page = await browser.newPage();
     await page.goto('http://www.mgkit.ru/studentu/raspisanie-zanatij');
+    //await page.goto('file://C:/Users/YobaBook/Desktop/для бота/unikit.htm');
 
     let content = await page.content();
     let $ = load(content)

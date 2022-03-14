@@ -7,7 +7,10 @@ let delFile = (srcFolder) => {
             if (!!files) {
                 files.forEach((file, i) => {
                     fs.unlink(srcFolder + file, err => {
-                        if (err) throw err;
+                        if (err) {
+                            console.log (err);
+                            resolve ()
+                        }
                     });
                 })
             }
