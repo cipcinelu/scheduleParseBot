@@ -2,7 +2,9 @@ const { resolve } = require('path')
 
 const delFile = require("../delFile")
 const rename = require("../rename")
+
 const chatIdJson = require('../../dataForMessage/chatIdJson.json');
+const getAnegdot = require('./getAnegdot.js')
 
 const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
     delFile('./pdf/')
@@ -18,13 +20,15 @@ const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
 
     await page.waitForTimeout(5000)
 
+    let anegdot = getAnegdot()
+
     await rename('./pdf/')
         .then(() => {
             if (!!prevExelLink) {
                 Object.keys(chatIdJson).forEach((el) => {
                     return bot.sendDocument
                         (el, './pdf/schedule_0.pdf',
-                            { contentType: 'application/x-pdf' })
+                            {caption: anegdot})
                         .catch(() => {
                             console.log(`${el} заблокировал бота`)
                         })
