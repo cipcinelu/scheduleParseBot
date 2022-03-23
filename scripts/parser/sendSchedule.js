@@ -17,24 +17,29 @@ const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
 
     //await page.click('div[aria-label="下載"]')
     await page.click('div[aria-label="Скачать"]')
+        .then(async () => {
+            await page.waitForTimeout(5000)
 
-    await page.waitForTimeout(5000)
-
-    let anegdot = getAnegdot()
-
-    await rename('./pdf/')
-        .then(() => {
-            if (!!prevExelLink) {
-                Object.keys(chatIdJson).forEach((el) => {
-                    return bot.sendDocument
-                        (el, './pdf/schedule_0.pdf',
-                            {caption: anegdot})
-                        .catch(() => {
-                            console.log(`${el} заблокировал бота`)
+            let anegdot = `Внимание анегдот: ${getAnegdot()}`
+            await rename('./pdf/')
+                .then(() => {
+                    if (!!prevExelLink) {
+                        Object.keys(chatIdJson).forEach((el) => {
+                            return bot.sendDocument
+                                (el, './pdf/schedule_0.pdf',
+                                    { caption: anegdot })
+                                .catch(() => {
+                                    console.log(`${el} заблокировал бота`)
+                                })
                         })
+                    }
                 })
-            }
         })
+        .catch((err) => {
+            return console.log(err)
+        })
+
+
 }
 
 module.exports = sendSchedule
