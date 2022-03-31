@@ -3,17 +3,15 @@ const { writeFile } = require('fs')
 
 const chatIdJson = require('../dataForMessage/chatIdJson.json')
 const startMessage = require ('../dataForMessage/startMessage')
-const linksTeams = require('../dataForMessage/linksTeams.js')
 const scheduleBells = require('../dataForMessage/scheduleBells.js')
-const parser = require('./parser.js')
 
 const tBot = (bot) => {
     bot.setMyCommands([
-        { command: '/start', description: 'Описание' },
-        { command: '/sh', description: 'Посмотреть расписание' },
-        { command: '/shbells', description: 'Расписание звонков и обеда' },
-        { command: '/linksteams', description: 'Ссылки на teams' },
-        { command: '/donate', description: 'Донат' },
+        { command: '/start', description: 'Описание котиков' },
+        { command: '/sh', description: 'Посмотреть расписание котиков' },
+        { command: '/shbells', description: 'Расписание питания котов' },
+        { command: '/linksteams', description: 'Ссылки на OnlyFans котов' },
+        { command: '/donate', description: 'Главный кот' },
     ])
 
     bot.on('message', async (msg) => {
@@ -34,21 +32,16 @@ const tBot = (bot) => {
                 {parse_mode:'HTML', disable_web_page_preview: true})
         }
         if (text == '/schedule' || text == '/sh')
-            return (
-                bot.sendMessage(chatId, "Loading..."),
-                bot.sendDocument(chatId, './pdf/schedule_0.pdf' )
-            )
+            return bot.sendPhoto(chatId, "https://cs6.pikabu.ru/post_img/big/2015/06/17/8/1434544476_2137371006.jpg")  
         if (text == '/schedulebells' || text == '/shbells')
                 return bot.sendMessage (chatId, scheduleBells)
         if (text == '/linksteams')
             return bot.sendMessage(chatId,
-                linksTeams, {disable_web_page_preview: true})
+                `Ты совсем кукухой поехал?
+                С головой дружишь?`)
         if (text == '/donate')
             return bot.sendMessage(chatId,
                 `https://www.tinkoff.ru/cf/9MdrKS2I2jN`)
-        if (text == '/test')
-            return (parser(bot),
-                bot.sendMessage(chatId, "Пошло поехало"))
     })
     // bot.on('webhook_error', (error) => {
     //     console.log(error.code)
