@@ -1,4 +1,5 @@
 const { resolve } = require('path')
+const fs = require('fs')
 
 const delFile = require("../delFile")
 const rename = require("../rename")
@@ -8,7 +9,7 @@ const getAnegdot = require('./getAnegdot.js')
 
 const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
     delFile('./pdf/')
-    await page.goto(exelLink)
+    await page.goto(exelLink, { waitUntil: 'load', timeout: 0 })
 
     await page._client.send("Page.setDownloadBehavior", {
         behavior: "allow",
@@ -20,24 +21,25 @@ const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
         .then(async () => {
             await page.waitForTimeout(5000)
 
-            let anegdot = `Внимание анегдот: ${getAnegdot()}`
+            let anegdot = await getAnegdot()
+
             await rename('./pdf/')
                 .then(() => {
                     if (!!prevExelLink) {
                         Object.keys(chatIdJson).forEach((el) => {
                             return bot.sendDocument
                                 (el, './pdf/schedule_0.pdf',
-                                    { caption: anegdot })
-                                .catch(() => {
-                                    console.log(`${el} заблокировал бота`)
+                                    { caption: `Внимание анегдот: ${anegdot}` })
+                                .catch((err) => {
+                                    console.log(`${err}`)
                                 })
                         })
                     }
                 })
-        })
-        .catch((err) => {
-            return console.log(err)
-        })
+            })
+            .catch((err) => {
+                return console.log(err)
+            })
 
 
 }

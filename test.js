@@ -1,9 +1,3 @@
-const text = require('./dataForMessage/anegdots.js')
+const fs = require("fs");
 
-// text.forEach(
-//     value => console.log(value)
-// )
-let zeroDay = new Date ('03.23.2022')
-
-console.log(Math.ceil((Date.now() - 1647982800000)/(1000 * 3600 * 24)))
-
+fs.readdir('./pdf', (err, files) => console.log( files[0]))

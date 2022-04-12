@@ -4,3 +4,4 @@ pdf
 /.env
 /dataForMessage/chatIdJson.json
 /package-lock.json
+test.js
