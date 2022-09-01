@@ -46,7 +46,7 @@ const tBot = (bot) => {
         if (text == '/donate')
             return bot.sendMessage(chatId,
                 `https://www.tinkoff.ru/cf/9MdrKS2I2jN`)
-        if (text == '/test')
+        if (text == '/test' && chatId === parseInt (process.env.ADMINID))
             return (parser(bot),
                 bot.sendMessage(chatId, "Пошло поехало"))
     })

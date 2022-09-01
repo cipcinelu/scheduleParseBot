@@ -14,7 +14,7 @@ let parser = async (bot) => {
 
     const browser = await puppeteer.launch({
         headless: true,
-        executablePath: '/usr/bin/chromium-browser'
+       // executablePath: '/usr/bin/chromium-browser'
     });
 
     const page = await browser.newPage();
@@ -23,7 +23,7 @@ let parser = async (bot) => {
 
     let content = await page.content();
     let $ = load(content)
-    let exelLinks = $('h2>span>a:contains("Изменения в расписании")')
+    let exelLinks = $('h2>span>a:contains("группы")')
 
     exelLink = await searchLastSchedule(exelLinks, page)
     
