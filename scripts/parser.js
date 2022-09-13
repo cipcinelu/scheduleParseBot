@@ -13,12 +13,12 @@ let prevExelLink
 let parser = async (bot) => {
 
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
        // executablePath: '/usr/bin/chromium-browser'
     });
 
     const page = await browser.newPage();
-    await page.goto('http://www.mgkit.ru/studentu/raspisanie-zanatij');
+    await page.goto('http://www.mgkit.ru/studentu/raspisanie-zanatij', { waitUntil: 'load', timeout: 0 });
     //await page.goto('file://C:/Users/YobaBook/Desktop/для бота/unikit.htm');
 
     let content = await page.content();

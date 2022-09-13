@@ -25,7 +25,7 @@ const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
 
             await rename('./pdf/')
                 .then(() => {
-                    if (!!prevExelLink) {
+                    if (!prevExelLink) {
                         Object.keys(chatIdJson).forEach((el) => {
                             return bot.sendDocument
                                 (el, './pdf/schedule_0.pdf',
