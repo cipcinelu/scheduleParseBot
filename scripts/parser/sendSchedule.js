@@ -8,6 +8,7 @@ const chatIdJson = require('../../dataForMessage/chatIdJson.json');
 const getAnegdot = require('./getAnegdot.js')
 
 const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
+    
     delFile('./pdf/')
     await page.goto(exelLink, { waitUntil: 'load', timeout: 0 })
 
@@ -25,7 +26,7 @@ const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
 
             await rename('./pdf/')
                 .then(() => {
-                    if (!prevExelLink) {
+                    if (!!prevExelLink) {
                         Object.keys(chatIdJson).forEach((el) => {
                             return bot.sendDocument
                                 (el, './pdf/schedule_0.pdf',

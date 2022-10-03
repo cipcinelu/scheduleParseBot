@@ -10,10 +10,12 @@ puppeteer.use(StealthPlugin())
 let exelLink;
 let prevExelLink
 
-let parser = async (bot) => {
+let parser = async (bot, sendForce = false) => {
 
+    if (sendForce == true) prevExelLink = "Рандомный текст"
+    
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
        // executablePath: '/usr/bin/chromium-browser'
     });
 
