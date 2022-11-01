@@ -16,7 +16,7 @@ let parser = async (bot, sendForce = false) => {
     
     const browser = await puppeteer.launch({
         headless: true,
-       // executablePath: '/usr/bin/chromium-browser'
+       // executablePath: '/usr/bin/google-chrome'
     });
 
     const page = await browser.newPage();
@@ -33,7 +33,7 @@ let parser = async (bot, sendForce = false) => {
     console.log("prevExelLink " + prevExelLink)
 
     if (exelLink != prevExelLink) {
-        await sendSchedule(page, bot, exelLink, prevExelLink)
+        await sendSchedule(page, bot, exelLink, prevExelLink).then()
     } else 
         console.log('Расписание не изменилось')
 

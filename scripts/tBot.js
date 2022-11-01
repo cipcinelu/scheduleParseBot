@@ -5,13 +5,16 @@ const chatIdJson = require('../dataForMessage/chatIdJson.json')
 const startMessage = require ('../dataForMessage/startMessage')
 const linksTeams = require('../dataForMessage/linksTeams.js')
 const scheduleBells = require('../dataForMessage/scheduleBells.js')
-const parser = require('./parser.js')
+const parser = require('./parser.js');
+const getNameSh = require('./parser/getNameSh');
+const getAnegdot = require('./parser/getAnegdot');
 
 const tBot = (bot) => {
     bot.setMyCommands([
         { command: '/start', description: 'Описание' },
         { command: '/sh', description: 'Посмотреть расписание' },
         { command: '/shbells', description: 'Расписание звонков и обеда' },
+        { command: '/getanek', description: 'Хочу анегдот' },
         { command: '/linksteams', description: 'Ссылки на teams' },
         { command: '/donate', description: 'Донат' },
     ])
@@ -36,16 +39,18 @@ const tBot = (bot) => {
         if (text == '/schedule' || text == '/sh')
             return (
                 bot.sendMessage(chatId, "Loading..."),
-                bot.sendDocument(chatId, './pdf/schedule_0.pdf' )
+                bot.sendDocument(chatId, `./pdf/${getNameSh('./pdf/')}` )
             )
         if (text == '/schedulebells' || text == '/shbells')
                 return bot.sendMessage (chatId, scheduleBells)
         if (text == '/linksteams')
             return bot.sendMessage(chatId,
                 linksTeams, {disable_web_page_preview: true})
+        if (text == '/getanek')
+            return bot.sendMessage(chatId, await getAnegdot())
         if (text == '/donate')
             return bot.sendMessage(chatId,
-                `https://www.tinkoff.ru/cf/9MdrKS2I2jN`)
+                `https://qiwi.com/n/STEVEYOBA`)
         if (text == '/test' && chatId === parseInt (process.env.ADMINID))
             return (parser(bot),
                 bot.sendMessage(chatId, "Пошло поехало"))
