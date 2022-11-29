@@ -25,7 +25,7 @@ const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
                 .then(() => {
                     let fileName = getNameSh('./pdf/')
                     bot.startPolling()
-                    if (!!prevExelLink) {
+                    if (!!prevExelLink && !!fileName) {
                         Object.keys(chatIdJson).forEach((el) => {
                             return bot.sendDocument
                                 (el, `./pdf/${fileName}`,
@@ -35,7 +35,7 @@ const sendSchedule = async (page, bot, exelLink, prevExelLink) => {
                                     console.log(`${err}`)
                                 })
                         })
-                    }
+                    } else console.log('File not found')
                 })
             })
             .catch((err) => {

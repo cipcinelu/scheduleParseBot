@@ -19,4 +19,5 @@ let delFile = (srcFolder) => {
     })
 }
 
+
 module.exports = delFile;
