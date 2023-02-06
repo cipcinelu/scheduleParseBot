@@ -9,9 +9,9 @@ const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 let idAnek = Math.round (Math.random() * 733)
-console.log (idAnek)
+
 let text = anegdots [idAnek]
-console.log(text)
+
 Object.keys(chatIdJson).forEach((el) => {
     return bot.sendMessage
         (el, text)

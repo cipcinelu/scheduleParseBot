@@ -21,11 +21,11 @@ let parser = async (bot, sendForce = false) => {
 
     const page = await browser.newPage();
     await page.goto('http://www.mgkit.ru/studentu/raspisanie-zanatij', { waitUntil: 'load', timeout: 0 });
-    //await page.goto('file://C:/Users/YobaBook/Desktop/для бота/unikit.htm');
+    //await page.goto('file://C:/Users/YobaBook/Desktop/УниКИТ - Расписание занятий.htm');
 
     let content = await page.content();
     let $ = load(content)
-    let exelLinks = $('h2>span>a:contains("группы")')
+    let exelLinks = $('h2>a:contains("группы")')
 
     exelLink = await searchLastSchedule(exelLinks, page)
     

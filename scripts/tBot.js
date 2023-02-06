@@ -57,6 +57,11 @@ const tBot = (bot) => {
         if (text == '/sendForce' && chatId === parseInt (process.env.ADMINID))
             return (parser(bot, sendForce = true),
                 bot.sendMessage(chatId, "Пошло поехало (Принудительно)"))
+        if (text.match('/message') && chatId === parseInt (process.env.ADMINID)) {
+            Object.keys(chatIdJson).forEach((el) => {
+                return bot.sendMessage(el, text.replace(/\/message/,''))
+            })
+        }
     })
     // bot.on('webhook_error', (error) => {
     //     console.log(error.code)

@@ -16,10 +16,9 @@ const searchLastSchedule = async (exelLinks, page) => {
         $ = load(content)
         
         let descriptionSchedule = $('body>div:contains("асписание")>div').attr('aria-label')
-        let dateRegExp = /(0[1-9]|[12][0-9]|3[01])[- \.](0[1-9]|1[012])[- \.](19|20)\d\d/
+        let dateRegExp = /(0[1-9]|[12][0-9]|3[01])[- \.](0[1-9]|1[012])[- \.](20|23)(\d\d)?/
         let matchDate = descriptionSchedule.match(dateRegExp)
-        let date = new Date (`${matchDate[2]}.${matchDate[1]}.2022`)
-        
+        let date = new Date (`${matchDate[2]}.${matchDate[1]}.2023`)
         dataAndLink[date] = link
         dataSheduleArray.push(date)
     }
